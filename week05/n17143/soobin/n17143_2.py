@@ -1,3 +1,15 @@
+'''
+
+- R*C 크기의 map배열 sharkMap : 상어 없으면 0 , 있으면 [속력, 방향, 크기]
+
+1. 상어낚시 : 낚시왕이 있는 인덱스만 R번 접근하면서 비교
+2. 상어이동 : R*C 돌면서 tmp배열에 이동완료한 위치 저장 
+
+C*R*C 포문
+python3 : 시간초과.. 
+pypy3 : 980ms
+'''
+
 import sys
 input = sys.stdin.readline
 
