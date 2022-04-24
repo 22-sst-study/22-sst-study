@@ -16,18 +16,19 @@ def is_in_range(obj, a, b):
         return 0 <= a < len(obj) and 0 <= b < len(obj)
 
 
-def dragon(dot, dot_set, r, c, d, g, prev, history):
+def dragon(dot, dot_set, r, c, d, g, prev):  # prev: 이전 턴에서 진행했던 방향 배열을 역순으로 뒤집고 -를 붙인 것(방향을 반대로 함)
     if g == 0:
         return
     cr, cc, cd = r, c, d
-    for pd in prev:
+    turnned_prev = [1] + prev  # prev에 시계 방향 90도 회전을 더한 것. 즉, 이번 턴에서 그려야 할 드래곤 커브의 방향 배열
+    for pd in turnned_prev:  # 드래곤 커브 그리기
         x, y = directions[(cd + pd) % 4][0] + cr, directions[(cd + pd) % 4][1] + cc
         dot[x][y] = 1
         dot_set.add((x, y))
         cr, cc, cd = x, y, (cd + pd) % 4
-    curr = [-prev[len(prev)-i-1] for i in range(len(prev))]
-    new_history = curr + history
-    dragon(dot, dot_set, cr, cc, cd, g - 1, [1] + new_history, new_history)
+    curr_reverse = [-turnned_prev[len(turnned_prev)-i-1] for i in range(len(turnned_prev))]  # 다음 턴의 커브를 그리기 위해 이번 턴에서 사용했던 방향 배열을 역순으로 뒤집고 -를 붙임
+    next_turns = curr_reverse + prev  # 이전 턴의 드래곤 커브와 현재 턴의 드래곤 커브를 합쳐서 다음 턴의 드래곤 커브 방향 배열을 만듦
+    dragon(dot, dot_set, cr, cc, cd, g - 1, next_turns)
 
 
 def search(dot, dot_set):
@@ -50,7 +51,7 @@ def solution():
         x, y = directions[d][0] + r, directions[d][1] + c
         dot[r][c] = dot[x][y] = 1
         dot_set |= {(r, c), (x, y)}
-        dragon(dot, dot_set, x, y, d, g, [1], [])
+        dragon(dot, dot_set, x, y, d, g, [])
 
     print(search(dot, dot_set))
 
